@@ -1,0 +1,7 @@
+test.cpp
+build/
+*.o
+pong
+.*.swp*
+a.out
+*.log*
