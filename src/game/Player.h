@@ -28,4 +28,4 @@ private:
 	unsigned id;
 	unsigned score;
 	Point location;
-}
+};

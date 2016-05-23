@@ -1,6 +1,6 @@
 #ifndef TIMER_H
 #define TIMER_H
-
+#include <SDL2/SDL.h>
 class Timer
 {
 public:
@@ -10,13 +10,13 @@ public:
 	void pause();
 	void unpause();
 
-	unsigned get_time();
+	int get_time();
 	bool is_started();
 	bool is_paused();
 
 private:
-	unsigned start_ticks;
-	unsigned paused_ticks;
+	int start_ticks;
+	int paused_ticks;
 
 	bool paused;
 	bool started;

@@ -7,11 +7,10 @@ int main()
 	Pong* game = new Pong();	
 	
 	game->start();
-	do{
-		game->update();
-		//game->end();
+	do{ 
+		game->update(); 
 	}while(game->is_in_progress());
-
+	
 	delete game;
 	Log::info("Game terminated normally");	
 	return 0;

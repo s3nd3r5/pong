@@ -20,5 +20,8 @@ timer.o: src/util/Timer.cpp
 staticitem.o: src/game/StaticItem.cpp
 	$(CC) $(C_FLAGS) $(LIBS) src/game/StaticItem.cpp -o build/staticitem.o
 
+controller.o: src/game/Controller.cpp
+	$(CC) $(C_FLAGS) $(LIBS) src/game/Controller.cpp -o build/controller.o
+
 clean: 
 	\rm -rf build/** pong

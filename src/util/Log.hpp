@@ -47,73 +47,83 @@ namespace Log
 		}
 	}
 	
+	std::string to_string(int i){ return std::to_string(i); }
+	std::string to_string(long i){ return std::to_string(i); }
+	std::string to_string(long long i){ return std::to_string(i); }
+	std::string to_string(unsigned i){ return std::to_string(i); }
+	std::string to_string(unsigned long i){ return std::to_string(i); }
+	std::string to_string(unsigned long long i){ return std::to_string(i); }
+	std::string to_string(float i){ return std::to_string(i); }
+	std::string to_string(double i){ return std::to_string(i); }
+	std::string to_string(long double i){ return std::to_string(i); }
+
 	void debug(){ log_d(""); }
-	void debug(int msg){ log_d(std::to_string(msg)); }
-	void debug(long msg){ log_d(std::to_string(msg)); }
-	void debug(long long msg){ log_d(std::to_string(msg)); }
-	void debug(unsigned msg){ log_d(std::to_string(msg)); }
-	void debug(unsigned long msg){ log_d(std::to_string(msg)); }
-	void debug(unsigned long long msg){ log_d(std::to_string(msg)); }
-	void debug(float msg){ log_d(std::to_string(msg)); }
-	void debug(double msg){ log_d(std::to_string(msg)); }
-	void debug(long double msg){ log_d(std::to_string(msg)); }
+	void debug(int msg){ log_d(to_string(msg)); }
+	void debug(long msg){ log_d(to_string(msg)); }
+	void debug(long long msg){ log_d(to_string(msg)); }
+	void debug(unsigned msg){ log_d(to_string(msg)); }
+	void debug(unsigned long msg){ log_d(to_string(msg)); }
+	void debug(unsigned long long msg){ log_d(to_string(msg)); }
+	void debug(float msg){ log_d(to_string(msg)); }
+	void debug(double msg){ log_d(to_string(msg)); }
+	void debug(long double msg){ log_d(to_string(msg)); }
 	void debug(std::string msg){ log_d(msg); }
 	
 	void info(){ log("",INFO); }
-	void info(int msg){ log(std::to_string(msg),INFO); }
-	void info(long msg){ log(std::to_string(msg),INFO); }
-	void info(long long msg){ log(std::to_string(msg),INFO); }
-	void info(unsigned msg){ log(std::to_string(msg),INFO); }
-	void info(unsigned long msg){ log(std::to_string(msg),INFO); }
-	void info(unsigned long long msg){ log(std::to_string(msg),INFO); }
-	void info(float msg){ log(std::to_string(msg),INFO); }
-	void info(double msg){ log(std::to_string(msg),INFO); }
-	void info(long double msg){ log(std::to_string(msg),INFO); }
+	void info(int msg){ log(to_string(msg),INFO); }
+	void info(long msg){ log(to_string(msg),INFO); }
+	void info(long long msg){ log(to_string(msg),INFO); }
+	void info(unsigned msg){ log(to_string(msg),INFO); }
+	void info(unsigned long msg){ log(to_string(msg),INFO); }
+	void info(unsigned long long msg){ log(to_string(msg),INFO); }
+	void info(float msg){ log(to_string(msg),INFO); }
+	void info(double msg){ log(to_string(msg),INFO); }
+	void info(long double msg){ log(to_string(msg),INFO); }
 	void info(std::string msg){ log(msg,INFO); }
 	
 	void warn(){ log("",WARN); }
-	void warn(int msg){ log(std::to_string(msg),WARN); }
-	void warn(long msg){ log(std::to_string(msg),WARN); }
-	void warn(long long msg){ log(std::to_string(msg),WARN); }
-	void warn(unsigned msg){ log(std::to_string(msg),WARN); }
-	void warn(unsigned long msg){ log(std::to_string(msg),WARN); }
-	void warn(unsigned long long msg){ log(std::to_string(msg),WARN); }
-	void warn(float msg){ log(std::to_string(msg),WARN); }
-	void warn(double msg){ log(std::to_string(msg),WARN); }
-	void warn(long double msg){ log(std::to_string(msg),WARN); }
+	void warn(int msg){ log(to_string(msg),WARN); }
+	void warn(long msg){ log(to_string(msg),WARN); }
+	void warn(long long msg){ log(to_string(msg),WARN); }
+	void warn(unsigned msg){ log(to_string(msg),WARN); }
+	void warn(unsigned long msg){ log(to_string(msg),WARN); }
+	void warn(unsigned long long msg){ log(to_string(msg),WARN); }
+	void warn(float msg){ log(to_string(msg),WARN); }
+	void warn(double msg){ log(to_string(msg),WARN); }
+	void warn(long double msg){ log(to_string(msg),WARN); }
 	void warn(std::string msg){ log(msg,WARN); }	
 	
 	void error(){ log("",ERROR); }
-	void error(int msg){ log(std::to_string(msg),ERROR); }
-	void error(long msg){ log(std::to_string(msg),ERROR); }
-	void error(long long msg){ log(std::to_string(msg),ERROR); }
-	void error(unsigned msg){ log(std::to_string(msg),ERROR); }
-	void error(unsigned long msg){ log(std::to_string(msg),ERROR); }
-	void error(unsigned long long msg){ log(std::to_string(msg),ERROR); }
-	void error(float msg){ log(std::to_string(msg),ERROR); }
-	void error(double msg){ log(std::to_string(msg),ERROR); }
-	void error(long double msg){ log(std::to_string(msg),ERROR); }
+	void error(int msg){ log(to_string(msg),ERROR); }
+	void error(long msg){ log(to_string(msg),ERROR); }
+	void error(long long msg){ log(to_string(msg),ERROR); }
+	void error(unsigned msg){ log(to_string(msg),ERROR); }
+	void error(unsigned long msg){ log(to_string(msg),ERROR); }
+	void error(unsigned long long msg){ log(to_string(msg),ERROR); }
+	void error(float msg){ log(to_string(msg),ERROR); }
+	void error(double msg){ log(to_string(msg),ERROR); }
+	void error(long double msg){ log(to_string(msg),ERROR); }
 	void error(std::string msg){ log(msg,ERROR); }
 	
 	void error(exception &ex){ log_ex("",ex); }
 	void error(int msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(long msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(long long msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(unsigned msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(unsigned long msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(unsigned long long msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(float msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(double msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(long double msg, exception &ex)
-		{ log_ex(std::to_string(msg),ex); }
+		{ log_ex(to_string(msg),ex); }
 	void error(std::string msg, exception &ex)
 		{ log_ex(msg,ex); }
 }

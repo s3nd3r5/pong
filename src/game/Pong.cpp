@@ -1,14 +1,16 @@
 #include "./Pong.h"
 #include "./GUI.cpp"
 #include "./GameState.h"
+#include "./Control.h"
+#include "./Controller.cpp"
 #include "../util/Log.hpp"
 #include "../util/Timer.cpp"
 
 Pong::Pong()
 {
-	previous_time = 0;
 	state = GameState::READY;
 	gui = new GUI(title, width, height);
+	controller = new Controller();
 	timer = new Timer();
 	init_play_area();
 }
@@ -17,6 +19,7 @@ Pong::~Pong()
 {
 	delete timer;
 	delete gui;
+	delete controller;
 }
 
 void Pong::init_play_area()
@@ -96,6 +99,7 @@ void Pong::start()
 		Log::info("Starting game...");
 		this->show_intro();
 		state = GameState::PLAYING;
+		counted_frames = 0;
 		timer->start();
 	}else Log::error("Cannot start game...");
 }
@@ -116,12 +120,34 @@ bool Pong::is_in_progress()
 }
 
 void Pong::update(){ 
-	unsigned now = timer->get_time();
-	if(now > previous_time) 
-	{
-		previous_time = now;
-		gui->update(); 
+	int now = timer->get_time();
+	controller->take_input();
+	handle_input();
+	gui->update(); 	
+
+	if(now < FRAME_TICKS) gui->delay(FRAME_TICKS - now);
+}
+
+void Pong::handle_input()
+{
+	if(controller->is_pressed(Control::QUIT)){
+		end();
 	}
+	else{
+		if(controller->is_pressed(Control::PAUSE)){
+			if(state == GameState::PAUSED){
+				unpause();
+				gui->show_pause_screen(false);
+			}else{
+				pause();
+				gui->show_pause_screen(true);
+			}
+		}else{
+			//This is where gameplay goes!
+		}
+	}
+	
+
 }
 
 void Pong::show_intro()

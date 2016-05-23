@@ -1,16 +1,14 @@
-#ifndef CTRL_H
-#define CTRL_H
-#include <vector>
-class Control
-{
-public:
-	Control(bool holdable);
-	bool isPressed(){ return pressed; }
-	void press();
-private:
-	std::vector<int> keys;
-	bool pressed;
-	bool holdable;
-};
+#pragma once
+enum class Control{
+/*
+	Essentially this file will be used to access the state of each key 
+	For the Controller class as well as a way to reference them in 
+	the other classes
+*/
+	UP,
+	DOWN,
+	QUIT,
+	PAUSE,
 
-#endif
+	NUM_ITEMS // PLEASE LEAVE THIS LAST
+};

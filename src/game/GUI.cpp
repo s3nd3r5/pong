@@ -2,6 +2,7 @@
 #include "../util/Log.hpp"
 #include <stdexcept>
 
+
 GUI::GUI(const char* title, const unsigned width, 
 	const unsigned height)
 {
@@ -35,7 +36,21 @@ GUI::GUI(const char* title, const unsigned width,
 		throw std::runtime_error("Unable to init TTF");
 	}
 
+	pause_font = TTF_OpenFont("./resources/fonts/mono.ttf",48);
 	font = TTF_OpenFont("./resources/fonts/mono.ttf",24);
+
+
+	int tx, ty;
+	char* pause_msg = "Paused";
+	TTF_SizeText(pause_font, pause_msg, &tx,&ty);
+
+	pause_text = {
+		WINDOW_WIDTH/2 - (tx/2),
+		(WINDOW_HEIGHT/2) - (ty/2),
+		Colors::WHITE,
+		pause_msg
+	};
+
 	Log::info("Initialized Fonts");
 
 	SDL_ShowCursor(SDL_DISABLE);
@@ -111,7 +126,8 @@ void GUI::update()
 	set_draw_color(Colors::BLACK);
     SDL_RenderClear(renderer);
     
-    render_items();	    
+    if(paused) render_pause_screen();
+    else render_items();	    
 
     SDL_RenderPresent(renderer);
 }
@@ -129,4 +145,29 @@ GUI::Text* GUI::register_text(Text* text)
 {
 	texts.push_back(text);
 	return text;
+}
+
+void GUI::delay(int wait_time)
+{
+	Log::info("Delaying time for: " + Log::to_string(wait_time));
+	SDL_Delay(wait_time);
+}
+void GUI::show_pause_screen(bool p){ paused = p; }
+
+void GUI::render_pause_screen()
+{
+	SDL_Rect rect;
+	SDL_Surface *surface;
+	SDL_Texture *message;
+	surface = TTF_RenderText_Solid(pause_font, 
+	pause_text.text.c_str(), 
+	Colors::to_sdl(pause_text.color));
+
+
+	message = SDL_CreateTextureFromSurface(renderer, surface);
+
+	rect = { pause_text.x, pause_text.y, surface->w, surface->h };
+	
+	SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_RenderCopy(renderer, message, NULL, &rect);	
 }

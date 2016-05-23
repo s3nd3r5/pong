@@ -14,5 +14,5 @@ namespace Colors{
 			color.alpha
 		};
 	}
-}
+};
 #endif

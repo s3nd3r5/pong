@@ -1,7 +1,6 @@
 #include "./Timer.h"
 #include <SDL2/SDL.h>
 #include "./Log.hpp"
-#include <string>
 
 Timer::Timer()
 {
@@ -52,9 +51,9 @@ void Timer::unpause(){
  	}else Log::warn("Timer is already unpaused, or not even started");
 }
 
-unsigned Timer::get_time()
+int Timer::get_time()
 {
-	unsigned time_unit = 0;
+	int time_unit = 0;
 	if(started)
 	{
 		if(paused)
@@ -66,6 +65,6 @@ unsigned Timer::get_time()
 			time_unit = SDL_GetTicks() - start_ticks;
 		}
 	}
-	//Log::debug("Timer time " + std::to_string(time_unit));
+	Log::debug("Timer time " + Log::to_string(int(time_unit)));
 	return time_unit;
 }
