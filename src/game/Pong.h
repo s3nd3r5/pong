@@ -20,8 +20,8 @@ public:
 private:
 	const int FPS = 60;
 	const int FRAME_TICKS = 1000/FPS;
-	const unsigned width = 600;
-	const unsigned height = 400;
+	const int width = 600;
+	const int height = 400;
 	int counted_frames;
 	unsigned p1_score = 0;
 	unsigned p2_score = 0;
@@ -32,6 +32,7 @@ private:
 	GUI* gui;
 	Controller *controller;
 	Timer* timer;
+	Timer* fps_timer;
 	void show_intro();
 	void handle_input();
 	void init_play_area();

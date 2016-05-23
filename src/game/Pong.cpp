@@ -12,7 +12,10 @@ Pong::Pong()
 	gui = new GUI(title, width, height);
 	controller = new Controller();
 	timer = new Timer();
+	fps_timer = new Timer();
+	counted_frames = 0;
 	init_play_area();
+	fps_timer->start();
 }
 
 Pong::~Pong()
@@ -25,7 +28,7 @@ Pong::~Pong()
 void Pong::init_play_area()
 {
 	
-	unsigned w = width-4, h = 2;
+	int w = width-4, h = 2;
 
 	//draw top border
 	gui->register_item(new StaticItem("top",
@@ -100,7 +103,6 @@ void Pong::start()
 		this->show_intro();
 		state = GameState::PLAYING;
 		counted_frames = 0;
-		timer->start();
 	}else Log::error("Cannot start game...");
 }
 
@@ -120,11 +122,18 @@ bool Pong::is_in_progress()
 }
 
 void Pong::update(){ 
-	int now = timer->get_time();
+	timer->start();
+	float avg_fps = counted_frames 
+		/ (fps_timer->get_time() / 1000.f);
+	if(avg_fps > 2000000) avg_fps = 0;
+
+	Log::info("Average FPS: " + Log::to_string(avg_fps));
+
 	controller->take_input();
 	handle_input();
 	gui->update(); 	
-
+	++counted_frames;
+	int now = timer->get_time();
 	if(now < FRAME_TICKS) gui->delay(FRAME_TICKS - now);
 }
 

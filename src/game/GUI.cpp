@@ -1,7 +1,7 @@
 #include "./GUI.h"
 #include "../util/Log.hpp"
 #include <stdexcept>
-
+#include <string>
 
 GUI::GUI(const char* title, const unsigned width, 
 	const unsigned height)
@@ -38,19 +38,6 @@ GUI::GUI(const char* title, const unsigned width,
 
 	pause_font = TTF_OpenFont("./resources/fonts/mono.ttf",48);
 	font = TTF_OpenFont("./resources/fonts/mono.ttf",24);
-
-
-	int tx, ty;
-	char* pause_msg = "Paused";
-	TTF_SizeText(pause_font, pause_msg, &tx,&ty);
-
-	pause_text = {
-		WINDOW_WIDTH/2 - (tx/2),
-		(WINDOW_HEIGHT/2) - (ty/2),
-		Colors::WHITE,
-		pause_msg
-	};
-
 	Log::info("Initialized Fonts");
 
 	SDL_ShowCursor(SDL_DISABLE);
@@ -77,11 +64,6 @@ Item* GUI::register_item(Item* item)
 
 void GUI::render_items()
 {
-	SDL_Rect rect;
-	Text* text;
-	Item *item;
-	SDL_Surface *surface;
-	SDL_Texture *message;
 	for(items_iterator = items.begin();
 		items_iterator != items.end();
 		items_iterator++)
@@ -93,7 +75,7 @@ void GUI::render_items()
 			int(item->width), int(item->height) };
 		SDL_RenderFillRect(renderer, &rect);
 		
-		Log::debug("Rendered Item: " + item->getId());
+//		Log::debug("Rendered Item: " + item->getId());
 	}
 
 	for(texts_iterator = texts.begin();
@@ -108,16 +90,16 @@ void GUI::render_items()
 
 		message = SDL_CreateTextureFromSurface(renderer, surface);
 
-		int tx =  int(text->x), tw = surface->w,
-		ty = int(text->y), th = surface->h;
-		if(tx+tw > int(WINDOW_WIDTH)) tx-=tw;
-		if(ty+th > int(WINDOW_HEIGHT)) ty-=th;
+		int tx =  text->x, tw = surface->w,
+		ty = text->y, th = surface->h;
+		if(tx+tw > WINDOW_WIDTH) tx-=tw;
+		if(ty+th > WINDOW_HEIGHT) ty-=th;
 
 		rect = { tx, ty, tw, th };
 		
 		SDL_CreateTextureFromSurface(renderer, surface);
 		SDL_RenderCopy(renderer, message, NULL, &rect);	
-		Log::debug("Rendered Text: " + text->text);
+	//	Log::debug("Rendered Text: " + text->text);
 	}
 }
 
@@ -126,8 +108,10 @@ void GUI::update()
 	set_draw_color(Colors::BLACK);
     SDL_RenderClear(renderer);
     
-    if(paused) render_pause_screen();
-    else render_items();	    
+    render_items();	    
+   	if(paused){
+   		render_pause_screen();	
+   	} 
 
     SDL_RenderPresent(renderer);
 }
@@ -154,20 +138,31 @@ void GUI::delay(int wait_time)
 }
 void GUI::show_pause_screen(bool p){ paused = p; }
 
-void GUI::render_pause_screen()
+void GUI::init_pause_screen()
 {
-	SDL_Rect rect;
-	SDL_Surface *surface;
-	SDL_Texture *message;
-	surface = TTF_RenderText_Solid(pause_font, 
+	Log::info("Initalizing Pause Screen");
+	int tx, ty;
+	std::string pause_msg = "Paused";
+	TTF_SizeText(pause_font, pause_msg.c_str(), &tx,&ty);
+	pause_text = {
+		WINDOW_WIDTH/2 - tx/2,
+		WINDOW_HEIGHT/2 - ty/2,
+		Colors::WHITE,
+		pause_msg
+	};
+	pause_surface = TTF_RenderText_Solid(pause_font, 
 	pause_text.text.c_str(), 
 	Colors::to_sdl(pause_text.color));
+	pause_message = SDL_CreateTextureFromSurface(renderer
+		, pause_surface);
+	pause_rect = { pause_text.x, pause_text.y, 
+		pause_surface->w, pause_surface->h };
+	pause_inited = true;
+}
 
-
-	message = SDL_CreateTextureFromSurface(renderer, surface);
-
-	rect = { pause_text.x, pause_text.y, surface->w, surface->h };
-	
-	SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_RenderCopy(renderer, message, NULL, &rect);	
+void GUI::render_pause_screen()
+{
+	if(!pause_inited) init_pause_screen();
+	SDL_CreateTextureFromSurface(renderer, pause_surface);
+	SDL_RenderCopy(renderer, pause_message, NULL, &pause_rect);	
 }

@@ -15,8 +15,8 @@ public:
 		const unsigned height);
 	~GUI();
 	struct Text{
-		unsigned x;
-		unsigned y;
+		int x;
+		int y;
 		Colors::Color color;
 		std::string text;
 	};
@@ -26,8 +26,8 @@ public:
 	Text* register_text(Text* text);
 	void delay(int wait_time);
 private:
-	unsigned WINDOW_WIDTH;
-	unsigned WINDOW_HEIGHT;
+	int WINDOW_WIDTH;
+	int WINDOW_HEIGHT;
 	TTF_Font* font;
 	TTF_Font* pause_font;
 	SDL_Renderer* renderer;	
@@ -37,7 +37,17 @@ private:
 	std::vector<Text*> texts;
 	std::vector<Text*>::iterator texts_iterator;
 	Text pause_text;
-	bool paused;
+	SDL_Rect rect;
+	Text* text;
+	Item *item;
+	SDL_Surface *surface;
+	SDL_Texture *message;
+	SDL_Rect pause_rect;
+	SDL_Surface *pause_surface;
+	SDL_Texture *pause_message;
+	bool paused = false;
+	bool pause_inited = false;
+	void init_pause_screen();
 	void render_pause_screen();
 	void render_items();
 	void update_item(Item *item);

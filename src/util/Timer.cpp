@@ -65,6 +65,6 @@ int Timer::get_time()
 			time_unit = SDL_GetTicks() - start_ticks;
 		}
 	}
-	Log::debug("Timer time " + Log::to_string(int(time_unit)));
+	Log::debug("Timer time " + Log::to_string(time_unit));
 	return time_unit;
 }

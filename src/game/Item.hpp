@@ -25,6 +25,5 @@ public:
 
 	virtual void update() = 0;
 private:
-
 	std::string id;
 };
