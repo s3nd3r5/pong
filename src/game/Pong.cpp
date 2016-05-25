@@ -1,6 +1,8 @@
 #include "./Pong.h"
 #include "./GUI.cpp"
 #include "./GameState.h"
+#include "./StaticItem.cpp"
+#include "./Paddle.cpp"
 #include "./Control.h"
 #include "./Controller.cpp"
 #include "../util/Log.hpp"
@@ -61,6 +63,13 @@ void Pong::init_play_area()
 	gui->register_text(&p1_score_text);	
 	gui->register_text(&p2_score_text);
 
+	p1 = new Paddle("Player 1",10,50,20,
+		height/2-25,0.0f,start_h,height, Colors::WHITE);
+	gui->register_item(p1);
+
+	ball = new Ball("Ball", 10,10,width/2-5,height/2-5,
+		3.0f,-5.0f,0,start_h,width,height,Colors::WHITE);
+	gui->register_item(ball);
 }
 
 bool Pong::pause()
@@ -127,7 +136,7 @@ void Pong::update(){
 		/ (fps_timer->get_time() / 1000.f);
 	if(avg_fps > 2000000) avg_fps = 0;
 
-	Log::info("Average FPS: " + Log::to_string(avg_fps));
+	Log::debug("Average FPS: " + Log::to_string(avg_fps));
 
 	controller->take_input();
 	handle_input();
@@ -151,8 +160,50 @@ void Pong::handle_input()
 				pause();
 				gui->show_pause_screen(true);
 			}
-		}else{
+		}else if(GameState::PAUSED != state){
 			//This is where gameplay goes!
+			if(controller->is_pressed(Control::UP))
+			{
+				p1->update_dy(-25.0f);
+			}
+			if(controller->is_pressed(Control::DOWN))
+			{
+				p1->update_dy(25.0f);
+			}
+			p1->update();
+			p1->update_dy(0.0f);
+			//do AI logic
+			// if(ball->x + ball->dx <= 0 )
+			// {
+			// 	//P2 SCORE!
+			// 	++p2_score;
+			// 	ball->x = width/2 - ball->width/2;
+			// 	ball->y = height/2 - ball->height/2;
+			// 	ball->dx = 5.0f; //hit ball away from p1 
+			// 	ball->dy = 0.0f;
+			// 	Log::info("Player 2 Scored!: " + Log::to_string(p2_score));
+			// }else if(ball->x + ball->dx >= width)
+			// {
+			// 	//P1 SCORE!
+			// 	++p1_score;
+			// 	ball->x = width/2 - ball->width/2;
+			// 	ball->y = height/2 - ball->height/2;
+			// 	ball->dx = -5.0f; //hit ball away from p2 
+			// 	ball->dy = 0.0f;
+			// 	Log::info("Player 1 Scored!: " + Log::to_string(p1_score));
+			// }
+			if(ball->y == ball->max_y
+				|| ball->y == ball->min_y)
+			{
+				ball->dy *= -1;
+			}
+			if(ball->x == ball->max_x 
+				|| ball->x == ball->min_x)
+			{
+				ball->dx *= -1;
+			}
+			ball->update();
+			
 		}
 	}
 	

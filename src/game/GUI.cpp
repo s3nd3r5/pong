@@ -36,7 +36,7 @@ GUI::GUI(const char* title, const unsigned width,
 		throw std::runtime_error("Unable to init TTF");
 	}
 
-	pause_font = TTF_OpenFont("./resources/fonts/mono.ttf",48);
+	pause_font = TTF_OpenFont("./resources/fonts/sans.ttf",48);
 	font = TTF_OpenFont("./resources/fonts/mono.ttf",24);
 	Log::info("Initialized Fonts");
 
@@ -133,7 +133,7 @@ GUI::Text* GUI::register_text(Text* text)
 
 void GUI::delay(int wait_time)
 {
-	Log::info("Delaying time for: " + Log::to_string(wait_time));
+	Log::debug("Delaying time for: " + Log::to_string(wait_time));
 	SDL_Delay(wait_time);
 }
 void GUI::show_pause_screen(bool p){ paused = p; }

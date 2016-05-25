@@ -1,4 +1,6 @@
-#pragma once
+#ifndef ITEM_H
+#define ITEM_H
+
 #include "./Colors.hpp"
 #include <string>
 class Item{
@@ -24,6 +26,11 @@ public:
 	std::string getId(){ return this->id; }
 
 	virtual void update() = 0;
+	void update_dx(float dx){ this->dx = dx; }
+	void update_dy(float dy){ this->dy = dy; }
+
 private:
 	std::string id;
 };
+
+#endif

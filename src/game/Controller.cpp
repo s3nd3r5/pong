@@ -13,7 +13,7 @@ void Controller::clear()
 {
 	if(has_press)
 	{
-		Log::info("Clearing key states");
+		Log::debug("Clearing key states");
 		std::fill(pressed, pressed + int(Control::NUM_ITEMS), false);
 		has_press = false;
 	}
@@ -27,7 +27,7 @@ bool Controller::is_pressed(Control control)
 
 void Controller::press(Control control)
 {
-	Log::info("Pressing key: " + Log::to_string(int(control)));
+	Log::debug("Pressing key: " + Log::to_string(int(control)));
 	has_press = true;
 	pressed[int(control)] = true;
 }

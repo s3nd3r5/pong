@@ -4,8 +4,9 @@
 #include "./GameState.h"
 #include "./GUI.h"
 #include "./Controller.h"
+#include "./Item.hpp"
+#include "./Ball.cpp"
 #include "../util/Timer.h"
-#include "./StaticItem.cpp"
 class Pong 
 {
 public:
@@ -29,6 +30,9 @@ private:
 	const char* title = "PONG";
 	GUI::Text p1_score_text;
 	GUI::Text p2_score_text;
+	Item* p1;
+	Item* p2;
+	Ball* ball;
 	GUI* gui;
 	Controller *controller;
 	Timer* timer;
