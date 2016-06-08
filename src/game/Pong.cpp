@@ -68,7 +68,7 @@ void Pong::init_play_area()
 	gui->register_item(p1);
 
 	ball = new Ball("Ball", 10,10,width/2-5,height/2-5,
-		3.0f,-5.0f,0,start_h,width,height,Colors::WHITE);
+		3.0f,0.0f,0,start_h,width,height,Colors::WHITE);
 	gui->register_item(ball);
 }
 
@@ -131,13 +131,12 @@ bool Pong::is_in_progress()
 }
 
 void Pong::update(){ 
+
+	if(counted_frames % FPS == 0)
+	{
+		Log::info(counted_frames);
+	}
 	timer->start();
-	float avg_fps = counted_frames 
-		/ (fps_timer->get_time() / 1000.f);
-	if(avg_fps > 2000000) avg_fps = 0;
-
-	Log::debug("Average FPS: " + Log::to_string(avg_fps));
-
 	controller->take_input();
 	handle_input();
 	gui->update(); 	
@@ -162,16 +161,17 @@ void Pong::handle_input()
 			}
 		}else if(GameState::PAUSED != state){
 			//This is where gameplay goes!
+			
 			if(controller->is_pressed(Control::UP))
 			{
-				p1->update_dy(-25.0f);
+				float fps = FRAME_TICKS - timer->get_time();
+				p1->update_dy(-1 * ((p1->height*5)/fps));
 			}
 			if(controller->is_pressed(Control::DOWN))
 			{
-				p1->update_dy(25.0f);
+				float fps = FRAME_TICKS - timer->get_time();
+				p1->update_dy((p1->height*5)/fps);
 			}
-			p1->update();
-			p1->update_dy(0.0f);
 			//do AI logic
 			// if(ball->x + ball->dx <= 0 )
 			// {
@@ -181,7 +181,8 @@ void Pong::handle_input()
 			// 	ball->y = height/2 - ball->height/2;
 			// 	ball->dx = 5.0f; //hit ball away from p1 
 			// 	ball->dy = 0.0f;
-			// 	Log::info("Player 2 Scored!: " + Log::to_string(p2_score));
+			// 	Log::info("Player 2 Scored!: " 
+			// 		+ Log::to_string(p2_score));
 			// }else if(ball->x + ball->dx >= width)
 			// {
 			// 	//P1 SCORE!
@@ -190,20 +191,45 @@ void Pong::handle_input()
 			// 	ball->y = height/2 - ball->height/2;
 			// 	ball->dx = -5.0f; //hit ball away from p2 
 			// 	ball->dy = 0.0f;
-			// 	Log::info("Player 1 Scored!: " + Log::to_string(p1_score));
+			// 	Log::info("Player 1 Scored!: " + 
+			// 		Log::to_string(p1_score));
 			// }
+
 			if(ball->y == ball->max_y
 				|| ball->y == ball->min_y)
 			{
 				ball->dy *= -1;
 			}
-			if(ball->x == ball->max_x 
-				|| ball->x == ball->min_x)
+			if(ball->x == ball->max_x)
 			{
 				ball->dx *= -1;
+				// ball->x = width/2 - ball->width/2;
+				// ball->y = height/2 - ball->height/2;
+				// ball->dy = 0;
+				// p1_score++;
+				// p1_score_text.text = std::to_string(p1_score);
+			}
+			else if(ball->x == ball->min_x)
+			{
+				ball->dx *= -1;
+				ball->dy = 0;
+				ball->x = width/2 - ball->width/2;
+				ball->y = height/2 - ball->height/2;
+				p2_score++;
+
+				p2_score_text.text = std::to_string(p2_score);
+			}
+			
+			if((ball->x >= p1->x && ball->x <= p1->x + p1->width)
+				&& ball->y >= p1->y && ball->y <= p1->y + p1->height)
+			{
+				ball->dx *= -1;
+				ball->dy += p1->dy/10;
+				ball->x = p1->x + p1->width;
 			}
 			ball->update();
-			
+			p1->update();
+			p1->update_dy(0.0f);
 		}
 	}
 	

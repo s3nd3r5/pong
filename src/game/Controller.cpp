@@ -15,14 +15,15 @@ void Controller::clear()
 	{
 		Log::debug("Clearing key states");
 		std::fill(pressed, pressed + int(Control::NUM_ITEMS), false);
+		std::fill(held, held + int(Control::NUM_ITEMS), false);
 		has_press = false;
 	}
 }
 
 bool Controller::is_pressed(Control control)
 {
-	bool p = pressed[int(control)];
-	return p;
+	int ic = int(control);
+	return pressed[ic];
 }
 
 void Controller::press(Control control)
@@ -30,6 +31,12 @@ void Controller::press(Control control)
 	Log::debug("Pressing key: " + Log::to_string(int(control)));
 	has_press = true;
 	pressed[int(control)] = true;
+}
+void Controller::hold(Control control)
+{
+	Log::debug("Pressing key: " + Log::to_string(int(control)));
+	has_press = true;
+	held[int(control)] = true;
 }
 
 void Controller::take_input()
@@ -58,11 +65,19 @@ void Controller::take_input()
 				case SDLK_DOWN:
 				{
 					press(Control::DOWN);
+					if(e.key.repeat)
+					{
+						hold(Control::DOWN);
+					}
 					break;
 				}
 				case SDLK_UP:
 				{
 					press(Control::UP);
+					if(e.key.repeat)
+					{
+						hold(Control::UP);
+					}
 					break;
 				}
 				case SDLK_SPACE:
