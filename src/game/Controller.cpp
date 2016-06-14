@@ -6,7 +6,10 @@
 
 Controller::Controller(){
 	Log::info("Creating controller");
-	clear();
+	std::fill(released, released + int(Control::NUM_ITEMS), false);
+	std::fill(pressed, pressed + int(Control::NUM_ITEMS), false);
+	std::fill(held, held + int(Control::NUM_ITEMS), false);
+	//clear();
 }
 
 void Controller::clear()
@@ -14,10 +17,15 @@ void Controller::clear()
 	if(has_press)
 	{
 		Log::debug("Clearing key states");
-		std::fill(pressed, pressed + int(Control::NUM_ITEMS), false);
-		std::fill(held, held + int(Control::NUM_ITEMS), false);
+		pressed[int(Control::PAUSE)] = false;	
 		has_press = false;
 	}
+}
+
+bool Controller::is_held(Control control)
+{
+	int ic = int(control);
+	return held[ic];	
 }
 
 bool Controller::is_pressed(Control control)
@@ -26,17 +34,31 @@ bool Controller::is_pressed(Control control)
 	return pressed[ic];
 }
 
+bool Controller::is_released(Control control)
+{
+	int ic = int(control);
+	return released[ic];
+}
+
 void Controller::press(Control control)
 {
 	Log::debug("Pressing key: " + Log::to_string(int(control)));
-	has_press = true;
+	released[int(control)] = false;
 	pressed[int(control)] = true;
+}
+void Controller::release(Control control)
+{
+	Log::debug("Releasing key: " + Log::to_string(int(control)));
+	pressed[int(control)] = false;
+	held[int(control)] = false;
+	released[int(control)] = true;
 }
 void Controller::hold(Control control)
 {
 	Log::debug("Pressing key: " + Log::to_string(int(control)));
-	has_press = true;
 	held[int(control)] = true;
+	released[int(control)] = false;
+
 }
 
 void Controller::take_input()
@@ -50,16 +72,57 @@ void Controller::take_input()
 			Log::info("Quit Event Triggered");
 			press(Control::QUIT);
 		}
+		else if(e.type == SDL_KEYUP)
+		{
+			switch(e.key.keysym.sym){
+				case SDLK_q:{
+					release(Control::QUIT);
+					break;
+				}
+				case SDLK_ESCAPE:
+				{
+					release(Control::QUIT);
+					break;
+				}
+				case SDLK_DOWN:
+				{
+					release(Control::DOWN);
+					break;
+				}
+				case SDLK_UP:
+				{
+					release(Control::UP);
+					break;
+				}
+				case SDLK_SPACE:
+				{
+					release(Control::PAUSE);
+					break;
+				}
+				default:
+				{
+					//do nothing
+				}	
+			}
+		}
 		else if(e.type == SDL_KEYDOWN)
 		{
 			switch(e.key.keysym.sym){
 				case SDLK_q:{
 					press(Control::QUIT);
+					if(e.key.repeat)
+					{
+						hold(Control::QUIT);
+					}
 					break;
 				}
 				case SDLK_ESCAPE:
 				{
 					press(Control::QUIT);
+					if(e.key.repeat)
+					{
+						hold(Control::QUIT);
+					}
 					break;
 				}
 				case SDLK_DOWN:
@@ -82,11 +145,12 @@ void Controller::take_input()
 				}
 				case SDLK_SPACE:
 				{
-					//We dont want to keep pressing pause!
-					if(!e.key.repeat)
+					press(Control::PAUSE);
+					if(e.key.repeat)
 					{
-						press(Control::PAUSE);
+						hold(Control::PAUSE);
 					}
+					has_press = true;
 					break;
 				}default:
 				{

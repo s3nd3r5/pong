@@ -131,11 +131,6 @@ bool Pong::is_in_progress()
 }
 
 void Pong::update(){ 
-
-	if(counted_frames % FPS == 0)
-	{
-		Log::info(counted_frames);
-	}
 	timer->start();
 	controller->take_input();
 	handle_input();
@@ -151,7 +146,8 @@ void Pong::handle_input()
 		end();
 	}
 	else{
-		if(controller->is_pressed(Control::PAUSE)){
+		if(controller->is_pressed(Control::PAUSE)
+			&& !controller->is_held(Control::PAUSE)){
 			if(state == GameState::PAUSED){
 				unpause();
 				gui->show_pause_screen(false);
@@ -161,15 +157,20 @@ void Pong::handle_input()
 			}
 		}else if(GameState::PAUSED != state){
 			//This is where gameplay goes!
+			float fps = (counted_frames / 
+				(fps_timer->get_time() / 1000.0f));
 			
+
+			if(controller->is_released(Control::UP) || 
+				controller->is_released(Control::DOWN)){
+				p1->update_dy(0.0f);
+			}
 			if(controller->is_pressed(Control::UP))
 			{
-				float fps = FRAME_TICKS - timer->get_time();
 				p1->update_dy(-1 * ((p1->height*5)/fps));
 			}
 			if(controller->is_pressed(Control::DOWN))
 			{
-				float fps = FRAME_TICKS - timer->get_time();
 				p1->update_dy((p1->height*5)/fps);
 			}
 			//do AI logic
@@ -220,16 +221,15 @@ void Pong::handle_input()
 				p2_score_text.text = std::to_string(p2_score);
 			}
 			
-			if((ball->x >= p1->x && ball->x <= p1->x + p1->width)
-				&& ball->y >= p1->y && ball->y <= p1->y + p1->height)
+			if((ball->x >= p1->x && ball->x <= (p1->x + p1->width))
+				&& ball->y >= p1->y && ball->y <= (p1->y + p1->height))
 			{
 				ball->dx *= -1;
-				ball->dy += p1->dy/10;
+				ball->dy += p1->dy/5;
 				ball->x = p1->x + p1->width;
 			}
 			ball->update();
 			p1->update();
-			p1->update_dy(0.0f);
 		}
 	}
 	
