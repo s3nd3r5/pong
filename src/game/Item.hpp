@@ -26,8 +26,14 @@ public:
 	std::string getId(){ return this->id; }
 
 	virtual void update() = 0;
-	void update_dx(float dx){ this->dx = dx; }
-	void update_dy(float dy){ this->dy = dy; }
+	void update_dx(float fps){ 
+		if(fps == 0.0f) this->dx = fps;
+		else this->dx = (this->width*5)/fps; 
+	}
+	void update_dy(float fps){ 
+		if(fps == 0.0f) this->dy = fps;
+		else this->dy = (this->height*5)/fps; 
+	}
 
 private:
 	std::string id;

@@ -3,6 +3,7 @@ Pong
 
 A simple SDL2 Pong game
 
+With help of the SDL2 Tutorial 
 
 Setup
 ------

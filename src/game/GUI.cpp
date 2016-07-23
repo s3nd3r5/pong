@@ -75,7 +75,7 @@ void GUI::render_items()
 			int(item->width), int(item->height) };
 		SDL_RenderFillRect(renderer, &rect);
 		
-//		Log::debug("Rendered Item: " + item->getId());
+		Log::debug("Rendered Item: " + item->getId());
 	}
 
 	for(texts_iterator = texts.begin();

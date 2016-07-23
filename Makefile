@@ -1,6 +1,11 @@
 CC=g++
-C_FLAGS=-c -Wall -std=c++11
+C_FLAGS=-c -Wall -std=c++11 
 LIBS=-lSDL2 -lSDL2_ttf
+
+all: pong
+
+debug: C_FLAGS += -ggdb
+debug: pong
 
 pong: clean main.o
 	$(CC) $(LIBS) build/*.o -o pong 
