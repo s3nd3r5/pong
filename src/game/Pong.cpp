@@ -143,7 +143,7 @@ void Pong::update(){
 	if(now < FRAME_TICKS) gui->delay(FRAME_TICKS - now);
 }
 
-bool has_collision(Item* player, Item* ball)
+bool Pong::has_collision(Item* player, Item* ball)
 {
 	/*
 		(pX, pY) _ (pXw, pYh)
@@ -169,34 +169,30 @@ bool has_collision(Item* player, Item* ball)
 				bYh >= pY && bY <= pYh;
 }
 
-void modify_on_collision(Item* player, Item* ball)
+void Pong::modify_ball_on_collision(Item* player, Item* ball)
 {
 	ball->dx *= -1;
-	ball->dy += player->dy/5;
+	ball->dy += player->dy/3;
 	if((player->dy < 0 && ball->dy > 0)
 		|| (player->dy > 0 && ball->dy < 0)){
 		ball->dy *= -1;
 	}
 }
 
-void move_bot(Item* p, Item* b, float fps)
+void Pong::move_bot(Item* p, Item* b, float fps)
 {
 	//POC
 	if(b->dx < 0) return;
+
 	float poc_y = b->y;
 	float target_x = p->x;
 	float x = b->x;
-	int max_x = 50;
-	int c = 0;
 	if(b->dy != 0 
 		&& b->dx != 0)
 	{
-		while(x < target_x)
-		{
-			if(++c >= max_x) break;
-			poc_y += b->dy;
-			x += b->dx;		
-		}	
+		float steps = (target_x - x)/b->dx;	
+		poc_y = b->y + (b->dy * steps);
+		if(poc_y > (height-b->height)) poc_y = height - b->height;
 	}
 	
 	float mod = 0.0f;
@@ -275,12 +271,8 @@ void Pong::handle_input()
 			bool p1_collide = has_collision(p1,ball);
 			bool p2_collide = has_collision(p2,ball);
 
-			if(p1_collide) modify_on_collision(p1,ball);
-			if(p2_collide) 
-			{
-					modify_on_collision(p2,ball);
-					Log::info("p2 collide");
-			}
+			if(p1_collide) modify_ball_on_collision(p1,ball);
+			if(p2_collide) modify_ball_on_collision(p2,ball);
 			else move_bot(p2, ball,fps);			
 			
 			ball->update();

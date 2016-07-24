@@ -40,6 +40,9 @@ private:
 	void show_intro();
 	void handle_input();
 	void init_play_area();
+	bool has_collision(Item* player, Item* ball);
+	void modify_ball_on_collision(Item* player, Item* ball);
+	void move_bot(Item* p, Item* b, float fps);
 };
 
 #endif
