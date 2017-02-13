@@ -71,7 +71,7 @@ void Pong::init_play_area()
 	gui->register_item(p2);
 
 	ball = new Ball("Ball", 10,10,width/2-5,height/2-5,
-		-5.0f,0.0f,0,start_h,width,height,Colors::WHITE);
+		-5.0f,2.0f,0,start_h,width,height,Colors::WHITE);
 	gui->register_item(ball);
 }
 
@@ -172,7 +172,7 @@ bool Pong::has_collision(Item* player, Item* ball)
 void Pong::modify_ball_on_collision(Item* player, Item* ball)
 {
 	ball->dx *= -1;
-	ball->dy += player->dy/3;
+	ball->dy += player->dy;
 	if((player->dy < 0 && ball->dy > 0)
 		|| (player->dy > 0 && ball->dy < 0)){
 		ball->dy *= -1;
@@ -182,8 +182,8 @@ void Pong::modify_ball_on_collision(Item* player, Item* ball)
 void Pong::move_bot(Item* p, Item* b, float fps)
 {
 	//POC
-	if(b->dx < 0) return;
-
+	if((b->dx < 0 && p->x > (width/2)) ||
+		(b->dx > 0 && p->x < (width/2))) return;
 	float poc_y = b->y;
 	float target_x = p->x;
 	float x = b->x;
@@ -228,18 +228,18 @@ void Pong::handle_input()
 				(fps_timer->get_time() / 1000.0f));
 			
 
-			if(controller->is_released(Control::UP) || 
-				controller->is_released(Control::DOWN)){
-				p1->update_dy(0.0f);
-			}
-			if(controller->is_pressed(Control::UP))
-			{
-				p1->update_dy(-1 * fps);
-			}
-			if(controller->is_pressed(Control::DOWN))
-			{
-				p1->update_dy(fps);
-			}
+			// if(controller->is_released(Control::UP) || 
+			// 	controller->is_released(Control::DOWN)){
+			// 	p1->update_dy(0.0f);
+			// }
+			// if(controller->is_pressed(Control::UP))
+			// {
+			// 	p1->update_dy(-1 * fps);
+			// }
+			// if(controller->is_pressed(Control::DOWN))
+			// {
+			// 	p1->update_dy(fps);
+			// }
 			
 
 			if(ball->y == ball->max_y
@@ -252,14 +252,14 @@ void Pong::handle_input()
 				ball->dx *= -1;
 				ball->x = width/2 - ball->width/2;
 				ball->y = height/2 - ball->height/2;
-				ball->dy = 0;
+				ball->dy /= (1.3);
 				p1_score++;
 				p1_score_text.text = std::to_string(p1_score);
 			}
 			else if(ball->x == ball->min_x)
 			{
 				ball->dx *= -1;
-				ball->dy = 0;
+				ball->dy /= (1.3);
 				ball->x = width/2 - ball->width/2;
 				ball->y = height/2 - ball->height/2;
 				p2_score++;
@@ -272,9 +272,16 @@ void Pong::handle_input()
 			bool p2_collide = has_collision(p2,ball);
 
 			if(p1_collide) modify_ball_on_collision(p1,ball);
+			else move_bot(p1, ball, fps);
 			if(p2_collide) modify_ball_on_collision(p2,ball);
-			else move_bot(p2, ball,fps);			
-			
+			else move_bot(p2, ball,fps);
+
+			// float bX = ball->x + ball->dx; //future x point of ball
+			// float bY = ball->y + ball->dy; //future y point of ball
+
+			// float p1X = p1->x + p1->dx;
+			// float p1Y = p1->y + p1->dy;
+
 			ball->update();
 			p1->update();
 			p2->update();
