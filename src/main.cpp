@@ -12,6 +12,6 @@ int main()
 	}while(game->is_in_progress());
 	
 	delete game;
-	Log::info("Game terminated normally");	
+	Log::info("Game terminated normally");
 	return 0;
 }

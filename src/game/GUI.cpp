@@ -84,8 +84,8 @@ void GUI::render_items()
 	{
 		text = *texts_iterator;
 		surface = TTF_RenderText_Solid(font, 
-		text->text.c_str(), 
-		Colors::to_sdl(text->color));
+				text->text.c_str(), 
+				Colors::to_sdl(text->color));
 
 
 		message = SDL_CreateTextureFromSurface(renderer, surface);
@@ -99,19 +99,20 @@ void GUI::render_items()
 		
 		SDL_CreateTextureFromSurface(renderer, surface);
 		SDL_RenderCopy(renderer, message, NULL, &rect);	
-	//	Log::debug("Rendered Text: " + text->text);
 	}
 }
 
 void GUI::update()
 {
-	set_draw_color(Colors::BLACK);
+   if(paused && pause_shown) return;	   
+    pause_shown = false;
+    set_draw_color(Colors::BLACK);
     SDL_RenderClear(renderer);
     
     render_items();	    
-   	if(paused){
-   		render_pause_screen();	
-   	} 
+    if(paused){
+    	render_pause_screen();	
+    } 
 
     SDL_RenderPresent(renderer);
 }
@@ -165,4 +166,5 @@ void GUI::render_pause_screen()
 	if(!pause_inited) init_pause_screen();
 	SDL_CreateTextureFromSurface(renderer, pause_surface);
 	SDL_RenderCopy(renderer, pause_message, NULL, &pause_rect);	
+	pause_shown = true;
 }

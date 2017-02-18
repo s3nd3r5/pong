@@ -47,6 +47,7 @@ private:
 	SDL_Texture *pause_message;
 	bool paused = false;
 	bool pause_inited = false;
+	bool pause_shown = false;
 	void init_pause_screen();
 	void render_pause_screen();
 	void render_items();
